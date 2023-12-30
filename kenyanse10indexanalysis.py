@@ -7,7 +7,16 @@ import traceback
 
 logging.basicConfig(level=logging.INFO)
 
+def time_calculator(timevalue_int):
+    """
+    This function to measure time units
+    """
+    return f"{int(timevalue_int/3600)}H {int((timevalue_int/60)%60) if timevalue_int/3600>0 else int(timevalue_int/60)}M {int(timevalue_int%60)}S"
+
 def load_and_clean_data(file_path):
+    """
+    This function loads and cleans the data
+    """
     logging.info("Loading and cleaning data...")
     start_time = time.time()
 
@@ -23,11 +32,14 @@ def load_and_clean_data(file_path):
         raise e
 
     elapsed_time = time.time() - start_time
-    logging.info(f"Loading and cleaning data completed, time taken: {elapsed_time:.2f} seconds")
+    logging.info(f"Loading and cleaning data completed, time taken: {time_calculator(elapsed_time)}")
 
     return df
 
 def extract_stock_data(df):
+    """
+    This function extracts the cleaned data
+    """
     logging.info("Extracting stock data...")
     start_time = time.time()
 
@@ -43,17 +55,23 @@ def extract_stock_data(df):
         raise e
 
     elapsed_time = time.time() - start_time
-    logging.info(f"Extracting stock data completed, time taken: {elapsed_time:.2f} seconds")
+    logging.info(f"Extracting stock data completed, time taken: {time_calculator(elapsed_time)}")
 
     return stocks
 
 def calculate_portfolio_performance(portfolio):
+    """
+    This function calculates the performance of the portfolio
+    """
     first_close = sum([data[0][1] for data in portfolio.values()]) / len(portfolio) if len(portfolio) != 0 else 0
     last_close = sum([data[-1][1] for data in portfolio.values()]) / len(portfolio) if len(portfolio) != 0 else 0
     performance = ((last_close - first_close) / first_close) * 100 if first_close != 0 else 0
     return performance
 
 def generate_portfolios(stocks, max_size=10):
+    """
+    This function generates the actual portfolios from the cleaned stock data
+    """
     logging.info("Generating portfolios...")
     start_time = time.time()
 
@@ -72,12 +90,15 @@ def generate_portfolios(stocks, max_size=10):
         raise e
 
     elapsed_time = time.time() - start_time
-    logging.info(f"Generating portfolios completed, time taken: {elapsed_time:.2f} seconds")
+    logging.info(f"Generating portfolios completed, time taken: {time_calculator(elapsed_time)}")
 
     portfolios.sort(key=lambda x: abs(x[1]), reverse=True)
     return portfolios
 
 def main():
+    """
+    The main function runs the entire script
+    """
     logging.info("Script started.")
     file_path = os.path.join(os.getcwd(), "dataset.csv")
     

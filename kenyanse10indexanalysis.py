@@ -4,14 +4,9 @@ import itertools
 import logging
 import time
 import traceback
+from humanfriendly import format_timespan
 
 logging.basicConfig(level=logging.INFO)
-
-def time_calculator(timevalue_int):
-    """
-    This function to measure time units
-    """
-    return f"{int(timevalue_int/3600)}H {int((timevalue_int/60)%60) if timevalue_int/3600>0 else int(timevalue_int/60)}M {int(timevalue_int%60)}S"
 
 def load_and_clean_data(file_path):
     """
@@ -32,7 +27,7 @@ def load_and_clean_data(file_path):
         raise e
 
     elapsed_time = time.time() - start_time
-    logging.info(f"Loading and cleaning data completed, time taken: {time_calculator(elapsed_time)}")
+    logging.info(f"Loading and cleaning data completed, time taken: {format_timespan(elapsed_time)}")
 
     return df
 
@@ -55,7 +50,7 @@ def extract_stock_data(df):
         raise e
 
     elapsed_time = time.time() - start_time
-    logging.info(f"Extracting stock data completed, time taken: {time_calculator(elapsed_time)}")
+    logging.info(f"Extracting stock data completed, time taken: {format_timespan(elapsed_time)}")
 
     return stocks
 
@@ -90,7 +85,7 @@ def generate_portfolios(stocks, max_size=10):
         raise e
 
     elapsed_time = time.time() - start_time
-    logging.info(f"Generating portfolios completed, time taken: {time_calculator(elapsed_time)}")
+    logging.info(f"Generating portfolios completed, time taken: {format_timespan(elapsed_time)}")
 
     portfolios.sort(key=lambda x: abs(x[1]), reverse=True)
     return portfolios

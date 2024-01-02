@@ -4,9 +4,12 @@ import itertools
 import logging
 import time
 import traceback
+import faulthandler
 from humanfriendly import format_timespan
 
 logging.basicConfig(level=logging.INFO)
+
+faulthandler.enable()
 
 def load_and_clean_data(file_path):
     """
@@ -58,9 +61,15 @@ def calculate_portfolio_performance(portfolio):
     """
     This function calculates the performance of the portfolio
     """
-    first_close = sum([data[0][1] for data in portfolio.values()]) / len(portfolio) if len(portfolio) != 0 else 0
-    last_close = sum([data[-1][1] for data in portfolio.values()]) / len(portfolio) if len(portfolio) != 0 else 0
-    performance = ((last_close - first_close) / first_close) * 100 if first_close != 0 else 0
+    try:
+        first_close = sum([data[0][1] for data in portfolio.values()]) / len(portfolio) if len(portfolio) != 0 else 0
+        last_close = sum([data[-1][1] for data in portfolio.values()]) / len(portfolio) if len(portfolio) != 0 else 0
+        performance = ((last_close - first_close) / first_close) * 100 if first_close != 0 else 0
+    
+    except Exception:
+        logging.error(f"Error calculating portfolio performance")
+        faulthandler.dump_traceback()  
+    
     return performance
 
 def generate_portfolios(stocks, max_size=10):
